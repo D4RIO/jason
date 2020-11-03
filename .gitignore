@@ -1,0 +1,3 @@
+lists/dev
+*.test
+*.o
