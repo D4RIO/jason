@@ -27,7 +27,7 @@ void PassGen::configDataLoad(string type,
                              string identifier,
                              string content)
 {
-  if (type == "set") {
+  if (type == "charset") {
     this->getCharSets()->insert({identifier, content});
   }
 
@@ -50,13 +50,19 @@ void PassGen::loadConfigFile(string fileName)
 
   while (getline(input, line, '\n')) {
     linenumber++;
+    if (line[0] == '#')
+      continue;
     // Tokenize input
     stringstream sline(line);
     while (getline(sline, word, '\t')) {
       words.push_back (word);
     }
     // TODO: Refactor this to another method
-    if (words.size() < 3) {
+    if (words.size() == 0) {
+
+      continue;
+
+    } else if (words.size() < 3) {
 
       cout << "WRN [" << fileName << ":" << linenumber
            << "] Wrong line format (line ignored)\n";

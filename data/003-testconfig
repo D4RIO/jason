@@ -1,2 +1,5 @@
-sets	common-symbols	?!#$-+*
+# This is a case of excessive 's'
+charsets	common-symbols	?!#$-+*
+
+# This is a common case of 'iforgotitis'
 other-symbols	/&%"
