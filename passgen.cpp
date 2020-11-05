@@ -23,8 +23,8 @@ void PassGen::loadFile(string fileName)
 
 
 
-void PassGen::configDataLoad(string identifier,
-                             string type,
+void PassGen::configDataLoad(string type,
+                             string identifier,
                              string content)
 {
   if (type == "set") {
@@ -48,27 +48,30 @@ void PassGen::loadConfigFile(string fileName)
 
   input.open (fileName, ifstream::in);
 
-  while (input >> line) {
+  while (getline(input, line, '\n')) {
     linenumber++;
     // Tokenize input
     stringstream sline(line);
-    while (getline(sline, word, ':')) {
+    while (getline(sline, word, '\t')) {
       words.push_back (word);
     }
+    // TODO: Refactor this to another method
     if (words.size() < 3) {
 
       cout << "WRN [" << fileName << ":" << linenumber
            << "] Wrong line format (line ignored)\n";
 
       cout << "INF [" << fileName << ":" << linenumber
-           << "] Lines should be 'identifier:type:content'. "
+           << "] It should be a tab separated file like 'type<TAB>identifier<TAB>content'. "
            << " See --help.\n";
 
     } else {
 
+      /*FIXME: tabs inside a content are missinterpreted */
+      /*       it should be words[2]+words[3]+···        */
       try {
-        //                     identif   type      content
-        this->configDataLoad ( words[0], words[1], words[2] );
+        //                     type      identifier content
+        this->configDataLoad ( words[0], words[1],  words[2] );
       }
       catch (string e) {
         cout << "WRN [" << fileName << ":" << linenumber
