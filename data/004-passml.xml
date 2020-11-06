@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	This is how I imagine the pieces of the
+	ecosystem, building dictionaries and
+	sharing the best password models written
+	down in PassML. This piece describes a
+	password composed by one or more words
+	followed by a few numbers and one symbol
+	taken from a very used set.
+-->
+<PASS output="fileName">
+  <!--
+	  This dictionary can contain several
+	  words or combinations of words with
+	  big chances of success. Words will be
+	  combined starting with just one and
+	  up to three, not allowing repeats.
+  -->
+  <DICTIONARY src="some-file" min="1" max="1" />
+
+  <!--
+	  There can be one up to three numbers
+	  (starts with one guessing that the
+	  password policy will not allow
+	  passwords without numbers)
+  -->
+  <NUMBER min="1" max="3" />
+
+  <!--
+	  And the symbol. Just one, because
+	  most people appends the symbol right
+	  after being rejected for it's absence
+  -->
+  <CHARSET set=".!?+-#," min="1" max="1" />
+
+</PASS>

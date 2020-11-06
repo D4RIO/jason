@@ -1,21 +1,32 @@
 TESTBIN:=\
 	001-loadfile.test \
 	002-loadconfig.test \
-	003-loadconfig-errors.test
+	003-loadconfig-errors.test \
+	004-passml.test
 
 CPP:=g++
 
 CFLAGS:=\
 	-Wall
 
-all:$(TESTBIN)
+BOLD:=\033[1m
+NORM:=\033[0m
+GREN:=\033[32m
+
+ifdef VERBOSE
+	HUSH:=
+else
+	HUSH:=@
+endif
+
+all::$(TESTBIN)
 
 # CREAR EL OBJETO SI EXISTE EL CPP
 %.o: %.cpp
-	@echo COMP $@ from $<
-	@$(CPP) -c $?
+	@echo "$(BOLD)$(GREN) ♼ $(NORM) $(BOLD)COMP $@ $(NORM)from $^"
+	$(HUSH)$(CPP) -c $^
 
 # CREAR EL TEST SI ESTÁN TODOS LOS OBJETOS
-%.test: %.o passgen.o
-	@echo GENT $@ from $?
-	@$(CPP) -o $@ $?
+%.test: %.o passgen.o tinyxml2.o
+	@echo "$(BOLD)$(GREN) ♼ $(NORM) $(BOLD)GENR $@ $(NORM)from $^"
+	$(HUSH)$(CPP) -o $@ $^
