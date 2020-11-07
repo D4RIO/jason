@@ -16,31 +16,31 @@ public:
 
 class Appender {
   Appender *_nextAppender;
-  int _min;
-  int _max;
-  int _current;
+  int _minLength;
+  int _maxLength;
+  int _currentLength;
 
 protected:
-  virtual std::string getCurrent() = 0;
+  virtual std::string getBlockValue() = 0;
   virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
-  int getCurrentDigits() {return _current;}
-  void increaseCurrentDigits() {_current++;}
+  int getCurrentLength() {return _currentLength;}
+  void increaseCurrentDigits() {_currentLength++;}
 
 public:
   Appender() {
 	_nextAppender = NULL;
-	_current = 0;
+	_currentLength = 0;
   }
   ~Appender() {}
   Appender *getNextAppender() {
 	return this->_nextAppender;
   }
-  int getMin() {return _min;}
-  int getMax() {return _max;}
-  void setMin(int yourMin) {_min = yourMin;_current = _min;}
-  void setMax(int yourMax) {_max = yourMax;}
-  std::string nextValue();
-  virtual void rewind() = 0;
+  int getMinLength() {return _minLength;}
+  int getMaxLength() {return _maxLength;}
+  void setMinLength(int yourMin) {_minLength = yourMin;_currentLength = _minLength;}
+  void setMaxLength(int yourMax) {_maxLength = yourMax;}
+  std::string nextChainValue();
+  virtual void rewindBlock() = 0;
 };
 
 
@@ -49,7 +49,7 @@ class AppendNumber : public Appender {
   long int _number;
 
 protected:
-  std::string getCurrent();
+  std::string getBlockValue();
   void doAdvance();
   void increaseCurrentDigits() {
 	Appender::increaseCurrentDigits();
@@ -59,10 +59,10 @@ protected:
 public:
   AppendNumber() {
 	_number = -1L; // so that next starts from 0
-	this->setMin(0);
-	this->setMax(2);
+	this->setMinLength(0);
+	this->setMaxLength(2);
   }
-  void rewind();
+  void rewindBlock();
 };
 
 

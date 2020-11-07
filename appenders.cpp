@@ -14,7 +14,7 @@ Appender* AppenderFactory::create(string type)
 
 
 
-string Appender::nextValue()
+string Appender::nextChainValue()
 {
 
   string appendix = "";
@@ -23,26 +23,26 @@ string Appender::nextValue()
   if (this->getNextAppender())
 	{
 	  try {
-		appendix = this->getNextAppender()->nextValue();
+		appendix = this->getNextAppender()->nextChainValue();
 	  }
 	  catch (AppenderExcept e) {
 		// but if he runs out of strings, then we need to
-		// rewind it and start again, with our next
+		// rewindBlock it and start again, with our next
 		if (e.type == AppenderExcept::NoMore)
 		  {
 			// this method can also throw AppenderExcept::NoMore
 			this->doAdvance();
 
-			this->getNextAppender()->rewind();
+			this->getNextAppender()->rewindBlock();
 
-			appendix = this->getNextAppender()->nextValue();
+			appendix = this->getNextAppender()->nextChainValue();
 		  }
 	  }
 	}
 
   else this->doAdvance();
 
-  return (this->getCurrent() + appendix);
+  return (this->getBlockValue() + appendix);
 }
 
 
@@ -55,25 +55,25 @@ void AppendNumber::doAdvance()
    */
   _number++; //TODO implement
 
-  if (_number >= pow(10,this->getCurrentDigits())) {
-	if (this->getCurrentDigits() < this->getMax())
+  if (_number >= pow(10,this->getCurrentLength())) {
+	if (this->getCurrentLength() < this->getMaxLength())
 	  this->increaseCurrentDigits();
 	else
 	  throw AppenderExcept(AppenderExcept::NoMore);
   }
 }
 
-void AppendNumber::rewind()
+void AppendNumber::rewindBlock()
 {
   _number = 0L;
 }
 
 
-string AppendNumber::getCurrent()
+string AppendNumber::getBlockValue()
 {
-  if (this->getCurrentDigits()) {
+  if (this->getCurrentLength()) {
 	stringstream s;
-	s << std::right << std::setw(this->getCurrentDigits())
+	s << std::right << std::setw(this->getCurrentLength())
 	  << std::setfill('0') << _number;
 	return s.str();
   }
