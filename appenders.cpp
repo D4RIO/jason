@@ -65,7 +65,8 @@ void AppendNumber::doAdvance()
 
 void AppendNumber::rewindBlock()
 {
-  _number = 0L;
+	_number = -1L;
+	resetCurrentLength();
 }
 
 

@@ -21,10 +21,11 @@ class Appender {
   int _currentLength;
 
 protected:
-  virtual std::string getBlockValue() = 0;
-  virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
-  int getCurrentLength() {return _currentLength;}
-  void increaseCurrentDigits() {_currentLength++;}
+	virtual std::string getBlockValue() = 0;
+	virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
+	int getCurrentLength() {return _currentLength;}
+	void increaseCurrentDigits() {_currentLength++;}
+	void resetCurrentLength() {_currentLength = 0;}
 
 public:
   Appender() {
