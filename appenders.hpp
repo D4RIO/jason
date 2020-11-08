@@ -8,7 +8,20 @@ class AppenderExcept {
 public:
   AppenderExcept(const int t) {this->type = t;}
   int       type;
+	const char * describe() {
+		switch (this->type)
+			{
+			case AppenderExcept::NoMore:
+				return "No more values in the block, but you can still rewindBlock()";
+			case AppenderExcept::UnknownType:
+				return "An unknown appender type was received";
+			case AppenderExcept::OK:
+				return "No error was found";
+			}
+		return NULL;
+	}
   static const int NoMore = 1;
+	static const int UnknownType = 2;
   static const int OK = 0;
 };
 

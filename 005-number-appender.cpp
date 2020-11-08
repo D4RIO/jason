@@ -8,6 +8,8 @@ int main(void)
 	nums->setMinLength(0);
 	nums->setMaxLength(1);
 
+
+
 	try
 		{
 			while(1)
@@ -16,10 +18,16 @@ int main(void)
 					cout << "A:[" << value << "]" << endl;
 				}
 		}
-	catch (...) {}
+	catch (AppenderExcept e)
+		{
+			cout << e.describe() << endl;
+		}
+
+
 
 	try
 		{
+			cout << "REWINDING..." << endl;
 			nums->rewindBlock();
 			while(1)
 				{
@@ -27,7 +35,25 @@ int main(void)
 					cout << "B:[" << value << "]" << endl;
 				}
 		}
-	catch (...) {}
+	catch (AppenderExcept e)
+		{
+			cout << e.describe() << endl;
+		}
+
+
+
+	try
+		{
+			cout << "NOW CREATING AN UNKNOWN TYPE (EXCEPTION EXPECTED)"
+				 << endl;
+			nums = AppenderFactory::create("SomethingUnknown");
+		}
+	catch (AppenderExcept e)
+		{
+			cout << e.describe() << endl;
+		}
+
+
 
 	return 0;
 }

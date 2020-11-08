@@ -7,9 +7,9 @@ using namespace std;
 Appender* AppenderFactory::create(string type)
 {
   if (type == "NUMBER")
-	return new AppendNumber();
+		return new AppendNumber();
 
-  return NULL;
+  throw AppenderExcept(AppenderExcept::UnknownType);
 }
 
 
