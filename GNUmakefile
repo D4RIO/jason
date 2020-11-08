@@ -34,6 +34,10 @@ all::$(TESTBIN)
 .PHONY: clean
 
 # CREAR EL OBJETO SI EXISTE EL CPP
+%.o: %.cpp %.hpp
+	@echo "$(NORM)$(YLLW) □ $(NORM) $(NORM)CMP $@ $(NORM) $(FROM)"
+	$(HUSH)$(CPP) -c $^
+
 %.o: %.cpp
 	@echo "$(NORM)$(YLLW) □ $(NORM) $(NORM)CMP $@ $(NORM) $(FROM)"
 	$(HUSH)$(CPP) -c $^
