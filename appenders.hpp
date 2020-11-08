@@ -6,15 +6,20 @@
 
 class AppenderExcept {
 public:
-  AppenderExcept(const int t) {this->type = t;}
-  int       type;
+  AppenderExcept(const int t) {this->type = t; this->info = "";}
+	AppenderExcept(const int t, const char *x) {this->type = t; this->info = x;}
+  int         type;
+	std::string info;
 	const char * describe() {
+		std::string temp = "";
 		switch (this->type)
 			{
 			case AppenderExcept::NoMore:
 				return "No more values in the block, but you can still rewindBlock()";
 			case AppenderExcept::UnknownType:
 				return "An unknown appender type was received";
+			case AppenderExcept::UnknownAttribute:
+				return this->info.c_str();
 			case AppenderExcept::OK:
 				return "No error was found";
 			}
@@ -22,6 +27,7 @@ public:
 	}
   static const int NoMore = 1;
 	static const int UnknownType = 2;
+	static const int UnknownAttribute = 3;
   static const int OK = 0;
 };
 
@@ -55,6 +61,7 @@ public:
 	void setMaxLength(int yourMax) {_maxLength = yourMax;}
 	std::string nextChainValue();
 	virtual void rewindBlock() = 0;
+	virtual void setAttribute(std::string, int) = 0;
 };
 
 
@@ -74,6 +81,7 @@ public:
 		this->setMaxLength(2);
 	}
 	void rewindBlock();
+	void setAttribute(std::string,int);
 };
 
 

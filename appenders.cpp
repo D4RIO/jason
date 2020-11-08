@@ -90,3 +90,22 @@ void AppendNumber::increaseCurrentDigits()
 	Appender::increaseCurrentDigits();
 	_number = 0L;
 }
+
+
+void AppendNumber::setAttribute(string attrName, int value)
+{
+	if (attrName == "minLength")
+		{
+			this->setMinLength(value);
+		}
+	else if (attrName == "maxLength")
+		{
+			this->setMaxLength(value);
+		}
+	else
+		{
+			string temp = "Attribute \"" + attrName + "\" is not recognized by NUMBER";
+			throw AppenderExcept(AppenderExcept::UnknownAttribute,
+													 temp.c_str());
+		}
+}

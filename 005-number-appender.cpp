@@ -55,5 +55,19 @@ int main(void)
 
 
 
+	try
+		{
+			cout << "NOW TRYING TO SET AN UNKNOWN ATTRIBUTE (EXCEPTION EXPECTED)"
+				 << endl;
+			nums = AppenderFactory::create("NUMBER");
+			nums->setAttribute("Something", 0);
+		}
+	catch (AppenderExcept e)
+		{
+			cout << e.describe() << endl;
+		}
+
+
+
 	return 0;
 }
