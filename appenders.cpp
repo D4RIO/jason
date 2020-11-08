@@ -53,32 +53,40 @@ void AppendNumber::doAdvance()
    * 1. moving the number forwards up to the current number of digits
    * 2. getting bigger
    */
-  _number++; //TODO implement
+  _number++;
 
-  if (_number >= pow(10,this->getCurrentLength())) {
-	if (this->getCurrentLength() < this->getMaxLength())
-	  this->increaseCurrentDigits();
-	else
-	  throw AppenderExcept(AppenderExcept::NoMore);
-  }
+	if (_number >= pow(10,this->getCurrentLength()))
+		{
+			if (this->getCurrentLength() < this->getMaxLength())
+				this->increaseCurrentDigits();
+			else
+				throw AppenderExcept(AppenderExcept::NoMore);
+		}
 }
 
 void AppendNumber::rewindBlock()
 {
 	_number = -1L;
-	resetCurrentLength();
+	this->resetCurrentLength();
 }
 
 
 string AppendNumber::getBlockValue()
 {
-  if (this->getCurrentLength()) {
-	stringstream s;
-	s << std::right << std::setw(this->getCurrentLength())
-	  << std::setfill('0') << _number;
-	return s.str();
-  }
-  else {
+	if (this->getCurrentLength())
+		{
+			stringstream s;
+			s << std::right << std::setw(this->getCurrentLength())
+				<< std::setfill('0') << _number;
+			return s.str();
+		}
+
 	return string("");
-  }
+}
+
+
+void AppendNumber::increaseCurrentDigits()
+{
+	Appender::increaseCurrentDigits();
+	_number = 0L;
 }

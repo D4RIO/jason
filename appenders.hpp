@@ -28,55 +28,52 @@ public:
 
 
 class Appender {
-  Appender *_nextAppender;
-  int _minLength;
-  int _maxLength;
-  int _currentLength;
+	Appender *_nextAppender;
+	int _minLength;
+	int _maxLength;
+	int _currentLength;
 
 protected:
 	virtual std::string getBlockValue() = 0;
 	virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
+	virtual void increaseCurrentDigits() {_currentLength++;}
 	int getCurrentLength() {return _currentLength;}
-	void increaseCurrentDigits() {_currentLength++;}
 	void resetCurrentLength() {_currentLength = 0;}
 
 public:
-  Appender() {
-	_nextAppender = NULL;
-	_currentLength = 0;
-  }
-  ~Appender() {}
-  Appender *getNextAppender() {
-	return this->_nextAppender;
-  }
-  int getMinLength() {return _minLength;}
-  int getMaxLength() {return _maxLength;}
-  void setMinLength(int yourMin) {_minLength = yourMin;_currentLength = _minLength;}
-  void setMaxLength(int yourMax) {_maxLength = yourMax;}
-  std::string nextChainValue();
-  virtual void rewindBlock() = 0;
+	Appender() {
+		_nextAppender = NULL;
+		_currentLength = 0;
+	}
+	~Appender() {}
+	Appender *getNextAppender() {
+		return this->_nextAppender;
+	}
+	int getMinLength() {return _minLength;}
+	int getMaxLength() {return _maxLength;}
+	void setMinLength(int yourMin) {_minLength = yourMin;_currentLength = _minLength;}
+	void setMaxLength(int yourMax) {_maxLength = yourMax;}
+	std::string nextChainValue();
+	virtual void rewindBlock() = 0;
 };
 
 
 
 class AppendNumber : public Appender {
-  long int _number;
+	long int _number;
 
 protected:
-  std::string getBlockValue();
-  void doAdvance();
-  void increaseCurrentDigits() {
-	Appender::increaseCurrentDigits();
-	_number = 0L;
-  }
+	std::string getBlockValue();
+	void doAdvance();
+	void increaseCurrentDigits();
 
 public:
-  AppendNumber() {
-	_number = -1L; // so that next starts from 0
-	this->setMinLength(0);
-	this->setMaxLength(2);
-  }
-  void rewindBlock();
+	AppendNumber() {
+		_number = -1L; // so that next starts from 0
+		this->setMinLength(0);
+		this->setMaxLength(2);
+	}
+	void rewindBlock();
 };
 
 
