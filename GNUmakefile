@@ -3,7 +3,8 @@ TESTBIN:=\
 	002-loadconfig.test \
 	003-loadconfig-errors.test \
 	004-passml.test \
-	005-number-appender.test
+	005-number-appender.test \
+	006-charset-appender.test
 
 CPP:=g++
 
@@ -25,6 +26,10 @@ ifdef VERBOSE
 else
 	HUSH:=@
 	FROM:=
+endif
+
+ifdef DEBUG
+	CFLAGS=$(CFLAGS) -g
 endif
 
 all::$(TESTBIN)

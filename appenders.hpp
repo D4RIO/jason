@@ -2,6 +2,7 @@
 #define __APPENDERS_H_
 
 #include <iostream>
+#include <vector>
 
 
 class AppenderExcept {
@@ -42,7 +43,7 @@ class Appender {
 protected:
 	virtual std::string getBlockValue() = 0;
 	virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
-	virtual void increaseCurrentDigits() {_currentLength++;}
+	virtual void increaseCurrentLength() {_currentLength++;}
 	int getCurrentLength() {return _currentLength;}
 	void resetCurrentLength() {_currentLength = 0;}
 
@@ -61,7 +62,7 @@ public:
 	void setMaxLength(int yourMax) {_maxLength = yourMax;}
 	std::string nextChainValue();
 	virtual void rewindBlock() = 0;
-	virtual void setAttribute(std::string, int) = 0;
+	virtual void setAttribute(std::string, std::string) = 0;
 };
 
 
@@ -72,7 +73,7 @@ class AppendNumber : public Appender {
 protected:
 	std::string getBlockValue();
 	void doAdvance();
-	void increaseCurrentDigits();
+	void increaseCurrentLength();
 
 public:
 	AppendNumber() {
@@ -81,8 +82,31 @@ public:
 		this->setMaxLength(2);
 	}
 	void rewindBlock();
-	void setAttribute(std::string,int);
+	void setAttribute(std::string,std::string);
 };
+
+
+
+
+class AppendCharset : public Appender {
+	std::vector<size_t> indexes;
+	std::string         symbolList;
+protected:
+	std::string getBlockValue();
+	void doAdvance();
+	void increaseCurrentLength();
+
+public:
+	AppendCharset() {
+		this->setMinLength(0);
+		this->setMaxLength(2);
+		this->indexes.clear();
+		this->symbolList="";
+	}
+	void rewindBlock();
+	void setAttribute(std::string,std::string);
+};
+
 
 
 
