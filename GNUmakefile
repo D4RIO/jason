@@ -18,7 +18,7 @@ GREN:=\033[32m
 BLUE:=\033[34m
 YLLW:=\033[33m
 
-NEEDCLEAN:=*.test *.o
+NEEDCLEAN:=*.test *.o *.gch
 
 ifdef VERBOSE
 	HUSH:=
