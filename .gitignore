@@ -1,3 +1,4 @@
 lists/dev
 *.test
 *.o
+*.gch
