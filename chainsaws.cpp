@@ -1,43 +1,43 @@
-#include "appenders.hpp"
+#include "chainsaws.hpp"
 #include <iomanip>
 #include <sstream>
 
 using namespace std;
 
-Appender* AppenderFactory::create(string type)
+Chainsaw* ChainsawFactory::create(string type)
 {
   if (type == "NUMBER")
-		return new AppendNumber();
+		return new ChainsawNumber();
 	if (type == "CHARSET")
-		return new AppendCharset();
+		return new ChainsawCharset();
 
-  throw AppenderExcept(AppenderExcept::UnknownType);
+  throw ChainsawExcept(ChainsawExcept::UnknownType);
 }
 
 
 
-string Appender::nextChainValue()
+string Chainsaw::nextChainValue()
 {
 
   string appendix = "";
 
   // if there is a next member, ask it for a new value
-  if (this->getNextAppender())
+  if (this->getNextChainsaw())
 	{
 	  try {
-		appendix = this->getNextAppender()->nextChainValue();
+		appendix = this->getNextChainsaw()->nextChainValue();
 	  }
-	  catch (AppenderExcept e) {
+	  catch (ChainsawExcept e) {
 		// but if he runs out of strings, then we need to
 		// rewindBlock it and start again, with our next
-		if (e.type == AppenderExcept::NoMore)
+		if (e.type == ChainsawExcept::NoMore)
 		  {
-			// this method can also throw AppenderExcept::NoMore
+			// this method can also throw ChainsawExcept::NoMore
 			this->doAdvance();
 
-			this->getNextAppender()->rewindBlock();
+			this->getNextChainsaw()->rewindBlock();
 
-			appendix = this->getNextAppender()->nextChainValue();
+			appendix = this->getNextChainsaw()->nextChainValue();
 		  }
 	  }
 	}
@@ -49,7 +49,7 @@ string Appender::nextChainValue()
 
 
 #include <math.h> // pow
-void AppendNumber::doAdvance()
+void ChainsawNumber::doAdvance()
 {
   /* Adavnce is considered by:
    * 1. moving the number forwards up to the current number of digits
@@ -62,18 +62,18 @@ void AppendNumber::doAdvance()
 			if (this->getCurrentLength() < this->getMaxLength())
 				this->increaseCurrentLength();
 			else
-				throw AppenderExcept(AppenderExcept::NoMore);
+				throw ChainsawExcept(ChainsawExcept::NoMore);
 		}
 }
 
-void AppendNumber::rewindBlock()
+void ChainsawNumber::rewindBlock()
 {
 	_number = -1L;
 	this->resetCurrentLength();
 }
 
 
-string AppendNumber::getBlockValue()
+string ChainsawNumber::getBlockValue()
 {
 	if (this->getCurrentLength())
 		{
@@ -87,14 +87,14 @@ string AppendNumber::getBlockValue()
 }
 
 
-void AppendNumber::increaseCurrentLength()
+void ChainsawNumber::increaseCurrentLength()
 {
-	Appender::increaseCurrentLength();
+	Chainsaw::increaseCurrentLength();
 	_number = 0L;
 }
 
 
-void AppendNumber::setAttribute(string attrName, string value)
+void ChainsawNumber::setAttribute(string attrName, string value)
 {
 	int ivalue;
 	try
@@ -105,7 +105,7 @@ void AppendNumber::setAttribute(string attrName, string value)
 		{
 			string temp = "Attribute \"" + attrName +
 				"\", given to NUMBER, is not an integer";
-			throw AppenderExcept(AppenderExcept::UnknownAttribute,
+			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 													 temp.c_str());
 		}
 
@@ -121,7 +121,7 @@ void AppendNumber::setAttribute(string attrName, string value)
 	else
 		{
 			string temp = "Attribute \"" + attrName + "\" is not recognized by NUMBER";
-			throw AppenderExcept(AppenderExcept::UnknownAttribute,
+			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 													 temp.c_str());
 		}
 }
@@ -129,7 +129,7 @@ void AppendNumber::setAttribute(string attrName, string value)
 
 
 
-string AppendCharset::getBlockValue()
+string ChainsawCharset::getBlockValue()
 {
 	string ret = "";
 	int i;
@@ -145,7 +145,7 @@ string AppendCharset::getBlockValue()
 	return ret;
 }
 
-void AppendCharset::doAdvance()
+void ChainsawCharset::doAdvance()
 {
 	int i;
 	if (this->getCurrentLength()>0)
@@ -167,22 +167,22 @@ void AppendCharset::doAdvance()
 		this->increaseCurrentLength();
 }
 
-void AppendCharset::increaseCurrentLength()
+void ChainsawCharset::increaseCurrentLength()
 {
 	if (this->getCurrentLength() == this->getMaxLength())
-		throw AppenderExcept(AppenderExcept::NoMore);
+		throw ChainsawExcept(ChainsawExcept::NoMore);
 
-	Appender::increaseCurrentLength();
+	Chainsaw::increaseCurrentLength();
 	indexes.push_back(0);
 }
 
-void AppendCharset::rewindBlock()
+void ChainsawCharset::rewindBlock()
 {
 	this->indexes.clear();
 	this->resetCurrentLength();
 }
 
-void AppendCharset::setAttribute(string attrName,string value)
+void ChainsawCharset::setAttribute(string attrName,string value)
 {
 	int ivalue;
 
@@ -196,7 +196,7 @@ void AppendCharset::setAttribute(string attrName,string value)
 				{
 					string temp = "Attribute \"" + attrName +
 						"\", given to NUMBER, is not an integer";
-					throw AppenderExcept(AppenderExcept::UnknownAttribute,
+					throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 															 temp.c_str());
 				}
 		}
@@ -217,7 +217,7 @@ void AppendCharset::setAttribute(string attrName,string value)
 	else
 		{
 			string temp = "Attribute \"" + attrName + "\" is not recognized by NUMBER";
-			throw AppenderExcept(AppenderExcept::UnknownAttribute,
+			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 													 temp.c_str());
 		}
 }

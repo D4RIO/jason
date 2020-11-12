@@ -1,17 +1,17 @@
-#include "appenders.hpp"
+#include "chainsaws.hpp"
 
 using namespace std;
 
 int main(void)
 {
-  Appender *set;
+  Chainsaw *set;
   try
 	{
-	  set = AppenderFactory::create("CHARSET");
+	  set = ChainsawFactory::create("CHARSET");
 	  set->setMinLength(0);
 	  set->setMaxLength(3);
 	}
-  catch (AppenderExcept e)
+  catch (ChainsawExcept e)
 	{
 	  cout << e.describe() << endl;
 	  return -1;
@@ -47,7 +47,7 @@ int main(void)
 		  i++;
 		}
 	}
-  catch (AppenderExcept e)
+  catch (ChainsawExcept e)
 	{
 	  cout << e.describe() << endl;
 	}

@@ -48,7 +48,7 @@ all::$(TESTBIN)
 	$(HUSH)$(CPP) -c $^
 
 # CREAR EL TEST SI ESTÁN TODOS LOS OBJETOS
-%.test: %.o passgen.o tinyxml2.o appenders.o
+%.test: %.o passgen.o tinyxml2.o chainsaws.o
 	@echo "$(BOLD)$(GREN) ■ $(NORM) $(BOLD)GEN $@ $(NORM) $(FROM)"
 	$(HUSH)$(CPP) -o $@ $^
 

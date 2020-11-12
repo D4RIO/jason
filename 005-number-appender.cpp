@@ -1,10 +1,10 @@
-#include "appenders.hpp"
+#include "chainsaws.hpp"
 
 using namespace std;
 
 int main(void)
 {
-	Appender *nums = AppenderFactory::create("NUMBER");
+	Chainsaw *nums = ChainsawFactory::create("NUMBER");
 	nums->setMinLength(0);
 	nums->setMaxLength(1);
 
@@ -18,7 +18,7 @@ int main(void)
 					cout << "A:[" << value << "]" << endl;
 				}
 		}
-	catch (AppenderExcept e)
+	catch (ChainsawExcept e)
 		{
 			cout << e.describe() << endl;
 		}
@@ -35,7 +35,7 @@ int main(void)
 					cout << "B:[" << value << "]" << endl;
 				}
 		}
-	catch (AppenderExcept e)
+	catch (ChainsawExcept e)
 		{
 			cout << e.describe() << endl;
 		}
@@ -46,9 +46,9 @@ int main(void)
 		{
 			cout << "NOW CREATING AN UNKNOWN TYPE (EXCEPTION EXPECTED)"
 				 << endl;
-			nums = AppenderFactory::create("SomethingUnknown");
+			nums = ChainsawFactory::create("SomethingUnknown");
 		}
-	catch (AppenderExcept e)
+	catch (ChainsawExcept e)
 		{
 			cout << e.describe() << endl;
 		}
@@ -59,10 +59,10 @@ int main(void)
 		{
 			cout << "NOW TRYING TO SET AN UNKNOWN ATTRIBUTE (EXCEPTION EXPECTED)"
 				 << endl;
-			nums = AppenderFactory::create("NUMBER");
+			nums = ChainsawFactory::create("NUMBER");
 			nums->setAttribute("Something", "0");
 		}
-	catch (AppenderExcept e)
+	catch (ChainsawExcept e)
 		{
 			cout << e.describe() << endl;
 		}

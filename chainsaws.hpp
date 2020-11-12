@@ -5,23 +5,23 @@
 #include <vector>
 
 
-class AppenderExcept {
+class ChainsawExcept {
 public:
-  AppenderExcept(const int t) {this->type = t; this->info = "";}
-	AppenderExcept(const int t, const char *x) {this->type = t; this->info = x;}
+  ChainsawExcept(const int t) {this->type = t; this->info = "";}
+	ChainsawExcept(const int t, const char *x) {this->type = t; this->info = x;}
   int         type;
 	std::string info;
 	const char * describe() {
 		std::string temp = "";
 		switch (this->type)
 			{
-			case AppenderExcept::NoMore:
+			case ChainsawExcept::NoMore:
 				return "No more values in the block, but you can still rewindBlock()";
-			case AppenderExcept::UnknownType:
+			case ChainsawExcept::UnknownType:
 				return "An unknown appender type was received";
-			case AppenderExcept::UnknownAttribute:
+			case ChainsawExcept::UnknownAttribute:
 				return this->info.c_str();
-			case AppenderExcept::OK:
+			case ChainsawExcept::OK:
 				return "No error was found";
 			}
 		return NULL;
@@ -34,27 +34,27 @@ public:
 
 
 
-class Appender {
-	Appender *_nextAppender;
+class Chainsaw {
+	Chainsaw *_nextChainsaw;
 	int _minLength;
 	int _maxLength;
 	int _currentLength;
 
 protected:
 	virtual std::string getBlockValue() = 0;
-	virtual void doAdvance() = 0; // can throw AppenderExcept (::NoMore)
+	virtual void doAdvance() = 0; // can throw ChainsawExcept (::NoMore)
 	virtual void increaseCurrentLength() {_currentLength++;}
 	int getCurrentLength() {return _currentLength;}
 	void resetCurrentLength() {_currentLength = 0;}
 
 public:
-	Appender() {
-		_nextAppender = NULL;
+	Chainsaw() {
+		_nextChainsaw = NULL;
 		_currentLength = 0;
 	}
-	~Appender() {}
-	Appender *getNextAppender() {
-		return this->_nextAppender;
+	~Chainsaw() {}
+	Chainsaw *getNextChainsaw() {
+		return this->_nextChainsaw;
 	}
 	int getMinLength() {return _minLength;}
 	int getMaxLength() {return _maxLength;}
@@ -67,7 +67,7 @@ public:
 
 
 
-class AppendNumber : public Appender {
+class ChainsawNumber : public Chainsaw {
 	long int _number;
 
 protected:
@@ -76,7 +76,7 @@ protected:
 	void increaseCurrentLength();
 
 public:
-	AppendNumber() {
+	ChainsawNumber() {
 		_number = -1L; // so that next starts from 0
 		this->setMinLength(0);
 		this->setMaxLength(2);
@@ -88,7 +88,7 @@ public:
 
 
 
-class AppendCharset : public Appender {
+class ChainsawCharset : public Chainsaw {
 	std::vector<size_t> indexes;
 	std::string         symbolList;
 protected:
@@ -97,7 +97,7 @@ protected:
 	void increaseCurrentLength();
 
 public:
-	AppendCharset() {
+	ChainsawCharset() {
 		this->setMinLength(0);
 		this->setMaxLength(2);
 		this->indexes.clear();
@@ -110,9 +110,9 @@ public:
 
 
 
-class AppenderFactory {
+class ChainsawFactory {
 public:
-  static Appender *create(std::string);
+  static Chainsaw *create(std::string);
 };
 
 
