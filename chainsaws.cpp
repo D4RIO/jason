@@ -23,41 +23,61 @@ string Chainsaw::nextChainValue()
 
   string appendix = "";
 
+  while (this->getCurrentLength() < this->getMinLength())
+	  this->increaseCurrentLength();
+
   // if there is a next member, ask it for a new value
   if (this->getNextChainsaw())
-	{
-	  try {
-		appendix = this->getNextChainsaw()->nextChainValue();
+	  {
+		  try
+			  {
+				  appendix = this->getNextChainsaw()->nextChainValue();
+			  }
+		  catch (ChainsawExcept e)
+			  {
+				  // but if he runs out of strings, then we need to
+				  // rewindBlock it and start again, with our next
+				  if (e.type == ChainsawExcept::NoMore)
+					  {
+						  // this method can also throw ChainsawExcept::NoMore
+						  this->doAdvance();
+
+						  this->getNextChainsaw()->rewindBlock();
+
+						  appendix = this->getNextChainsaw()->nextChainValue();
+					  }
+			  }
+		  catch (...)
+			  {
+				  throw ChainsawExcept(ChainsawExcept::UnknownError);
+			  }
 	  }
-	  catch (ChainsawExcept e) {
-		// but if he runs out of strings, then we need to
-		// rewindBlock it and start again, with our next
-		if (e.type == ChainsawExcept::NoMore)
-		  {
-			// this method can also throw ChainsawExcept::NoMore
-			this->doAdvance();
-
-			this->getNextChainsaw()->rewindBlock();
-
-			appendix = this->getNextChainsaw()->nextChainValue();
-		  }
+  else
+	  {
+		  this->doAdvance();
 	  }
-	}
-
-  else this->doAdvance();
 
   return (this->getBlockValue() + appendix);
 }
+
+void Chainsaw::addChain(Chainsaw *ref)
+{
+	if (this->getNextChain())
+		this->getNextChain()->addChain(ref);
+	else
+		this->_nextChainsaw = ref;
+}
+
 
 
 #include <math.h> // pow
 void ChainsawNumber::doAdvance()
 {
-  /* Adavnce is considered by:
-   * 1. moving the number forwards up to the current number of digits
-   * 2. getting bigger
-   */
-  _number++;
+	/* Adavnce is considered by:
+	 * 1. moving the number forwards up to the current number of digits
+	 * 2. getting bigger
+	 */
+	_number++;
 
 	if (_number >= pow(10,this->getCurrentLength()))
 		{
@@ -154,8 +174,8 @@ void ChainsawCharset::doAdvance()
 		{
 			indexes[this->getCurrentLength()]++;
 			for (i = (this->getCurrentLength());
-					 i > 0;
-					 i--)
+				 i > 0;
+				 i--)
 				{
 					if (this->indexes[i] == this->symbolList.length())
 						{
@@ -164,9 +184,8 @@ void ChainsawCharset::doAdvance()
 							else this->increaseCurrentLength();
 						}
 				}
-	}
-	else
-		this->increaseCurrentLength();
+		}
+	else this->increaseCurrentLength();
 }
 
 void ChainsawCharset::increaseCurrentLength()
@@ -197,7 +216,7 @@ void ChainsawCharset::setAttribute(string attrName,string value)
 			catch (...)
 				{
 					string temp = "Attribute \"" + attrName +
-						"\", given to NUMBER, is not an integer";
+						"\", given to CHARSET, is not an integer";
 					throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 															 temp.c_str());
 				}
@@ -218,7 +237,7 @@ void ChainsawCharset::setAttribute(string attrName,string value)
 		}
 	else
 		{
-			string temp = "Attribute \"" + attrName + "\" is not recognized by NUMBER";
+			string temp = "Attribute \"" + attrName + "\" is not recognized by CHARSET";
 			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 													 temp.c_str());
 		}
@@ -249,6 +268,7 @@ void ChainsawDictionary::doAdvance()
 void ChainsawDictionary::increaseCurrentLength()
 {
 	Chainsaw::increaseCurrentLength();
+	this->doAdvance();
 }
 
 void ChainsawDictionary::rewindBlock()
@@ -258,33 +278,8 @@ void ChainsawDictionary::rewindBlock()
 
 void ChainsawDictionary::setAttribute(string attrName, string value)
 {
-	int ivalue;
 
-	if (attrName == "minLength" || attrName == "maxLength")
-		{
-			try
-				{
-					ivalue = stoi(value);
-				}
-			catch (...)
-				{
-					string temp = "Attribute \"" + attrName +
-						"\", given to DICTIONARY, is not an integer";
-					throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
-															 temp.c_str());
-				}
-		}
-
-
-	if (attrName == "minLength")
-		{
-			this->setMinLength(ivalue);
-		}
-	else if (attrName == "maxLength")
-		{
-			this->setMaxLength(ivalue);
-		}
-	else if (attrName == "src")
+	if (attrName == "src")
 		{
 			try
 				{

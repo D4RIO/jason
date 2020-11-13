@@ -8,8 +8,8 @@ int main(void)
   try
 	{
 	  set = ChainsawFactory::create("CHARSET");
-	  set->setMinLength(0);
-	  set->setMaxLength(3);
+	  set->setAttribute("minLength", "1");
+	  set->setAttribute("maxLength", "1");
 	}
   catch (ChainsawExcept e)
 	{

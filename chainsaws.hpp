@@ -24,6 +24,8 @@ public:
 				return this->info.c_str();
 			case ChainsawExcept::IOFailure:
 				return "Some I/O error happened";
+			case ChainsawExcept::UnknownError:
+				return "Something wrong happened (UNKNOWN)";
 			case ChainsawExcept::OK:
 				return "No error was found";
 			}
@@ -33,6 +35,7 @@ public:
 	static const int UnknownType = 2;
 	static const int UnknownAttribute = 3;
 	static const int IOFailure = 4;
+	static const int UnknownError = 5;
 	static const int OK = 0;
 };
 
@@ -62,8 +65,10 @@ public:
 	}
 	int getMinLength() {return _minLength;}
 	int getMaxLength() {return _maxLength;}
-	void setMinLength(int yourMin) {_minLength = yourMin;_currentLength = _minLength;}
+	Chainsaw *getNextChain() {return _nextChainsaw;}
+	void setMinLength(int yourMin) {_minLength = yourMin;}
 	void setMaxLength(int yourMax) {_maxLength = yourMax;}
+	void addChain (Chainsaw *);
 	std::string nextChainValue();
 	virtual void rewindBlock() = 0;
 	virtual void setAttribute(std::string, std::string) = 0;
@@ -124,7 +129,7 @@ protected:
 public:
 	ChainsawDictionary() {
 		this->setMinLength(1);
-		this->setMaxLength(2);
+		this->setMaxLength(1);
 	}
 	void rewindBlock();
 	void setAttribute(std::string,std::string);

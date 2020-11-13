@@ -5,7 +5,8 @@ TESTBIN:=\
 	004-passml.test \
 	005-number-appender.test \
 	006-charset-appender.test \
-	007-dictionary-appender.test
+	007-dictionary-appender.test \
+	008-interact.test
 
 CPP:=g++
 
