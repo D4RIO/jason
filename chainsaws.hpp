@@ -2,14 +2,15 @@
 #define __APPENDERS_H_
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 
 
 class ChainsawExcept {
 public:
-  ChainsawExcept(const int t) {this->type = t; this->info = "";}
+	ChainsawExcept(const int t) {this->type = t; this->info = "";}
 	ChainsawExcept(const int t, const char *x) {this->type = t; this->info = x;}
-  int         type;
+	int         type;
 	std::string info;
 	const char * describe() {
 		std::string temp = "";
@@ -21,15 +22,18 @@ public:
 				return "An unknown appender type was received";
 			case ChainsawExcept::UnknownAttribute:
 				return this->info.c_str();
+			case ChainsawExcept::IOFailure:
+				return "Some I/O error happened";
 			case ChainsawExcept::OK:
 				return "No error was found";
 			}
 		return NULL;
 	}
-  static const int NoMore = 1;
+	static const int NoMore = 1;
 	static const int UnknownType = 2;
 	static const int UnknownAttribute = 3;
-  static const int OK = 0;
+	static const int IOFailure = 4;
+	static const int OK = 0;
 };
 
 
@@ -107,6 +111,24 @@ public:
 	void setAttribute(std::string,std::string);
 };
 
+
+
+class ChainsawDictionary : public Chainsaw {
+	std::ifstream input;
+	std::string line;
+protected:
+	std::string getBlockValue();
+	void doAdvance();
+	void increaseCurrentLength();
+
+public:
+	ChainsawDictionary() {
+		this->setMinLength(1);
+		this->setMaxLength(2);
+	}
+	void rewindBlock();
+	void setAttribute(std::string,std::string);
+};
 
 
 

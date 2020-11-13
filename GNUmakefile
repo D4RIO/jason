@@ -4,7 +4,8 @@ TESTBIN:=\
 	003-loadconfig-errors.test \
 	004-passml.test \
 	005-number-appender.test \
-	006-charset-appender.test
+	006-charset-appender.test \
+	007-dictionary-appender.test
 
 CPP:=g++
 

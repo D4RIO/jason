@@ -7,9 +7,11 @@ using namespace std;
 Chainsaw* ChainsawFactory::create(string type)
 {
   if (type == "NUMBER")
-		return new ChainsawNumber();
-	if (type == "CHARSET")
-		return new ChainsawCharset();
+	  return new ChainsawNumber();
+  if (type == "CHARSET")
+	  return new ChainsawCharset();
+  if (type == "DICTIONARY")
+	  return new ChainsawDictionary();
 
   throw ChainsawExcept(ChainsawExcept::UnknownType);
 }
@@ -217,6 +219,89 @@ void ChainsawCharset::setAttribute(string attrName,string value)
 	else
 		{
 			string temp = "Attribute \"" + attrName + "\" is not recognized by NUMBER";
+			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
+													 temp.c_str());
+		}
+}
+
+
+
+
+string ChainsawDictionary::getBlockValue()
+{
+	return line;
+}
+
+void ChainsawDictionary::doAdvance()
+{
+	try
+		{
+			if(! getline(this->input, this->line))
+
+				throw ChainsawExcept(ChainsawExcept::NoMore);
+		}
+	catch (...)
+		{
+			throw ChainsawExcept(ChainsawExcept::NoMore);
+		}
+}
+
+void ChainsawDictionary::increaseCurrentLength()
+{
+	Chainsaw::increaseCurrentLength();
+}
+
+void ChainsawDictionary::rewindBlock()
+{
+	this->input.seekg (0, this->input.beg);
+}
+
+void ChainsawDictionary::setAttribute(string attrName, string value)
+{
+	int ivalue;
+
+	if (attrName == "minLength" || attrName == "maxLength")
+		{
+			try
+				{
+					ivalue = stoi(value);
+				}
+			catch (...)
+				{
+					string temp = "Attribute \"" + attrName +
+						"\", given to DICTIONARY, is not an integer";
+					throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
+															 temp.c_str());
+				}
+		}
+
+
+	if (attrName == "minLength")
+		{
+			this->setMinLength(ivalue);
+		}
+	else if (attrName == "maxLength")
+		{
+			this->setMaxLength(ivalue);
+		}
+	else if (attrName == "src")
+		{
+			try
+				{
+					this->input.open(value, ifstream::in);
+				}
+			catch (...)
+				{
+					throw ChainsawExcept(ChainsawExcept::IOFailure);
+				}
+
+			if (this->input.bad() || this->input.fail())
+					throw ChainsawExcept(ChainsawExcept::IOFailure);
+
+		}
+	else
+		{
+			string temp = "Attribute \"" + attrName + "\" is not recognized by DICTIONARY";
 			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
 													 temp.c_str());
 		}
