@@ -72,6 +72,7 @@ public:
 	std::string nextChainValue();
 	virtual void rewindBlock() = 0;
 	virtual void setAttribute(std::string, std::string) = 0;
+	virtual std::string getChainDescription () = 0;
 };
 
 
@@ -92,6 +93,7 @@ public:
 	}
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
+	std::string getChainDescription();
 };
 
 
@@ -100,6 +102,7 @@ public:
 class ChainsawCharset : public Chainsaw {
 	std::vector<size_t> indexes;
 	std::string         symbolList;
+	bool                firstRun;
 protected:
 	std::string getBlockValue();
 	void doAdvance();
@@ -111,15 +114,18 @@ public:
 		this->setMaxLength(2);
 		this->indexes.clear();
 		this->symbolList="";
+		this->firstRun = true;
 	}
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
+	std::string getChainDescription();
 };
 
 
 
 class ChainsawDictionary : public Chainsaw {
 	std::ifstream input;
+	std::string src;
 	std::string line;
 protected:
 	std::string getBlockValue();
@@ -133,6 +139,7 @@ public:
 	}
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
+	std::string getChainDescription();
 };
 
 

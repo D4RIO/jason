@@ -148,20 +148,30 @@ void ChainsawNumber::setAttribute(string attrName, string value)
 		}
 }
 
+string ChainsawNumber::getChainDescription()
+{
+  string ret = "NUMBER";
+  ret += "{min="+to_string(getMinLength())+"}";
+  ret += "{max="+to_string(getMaxLength())+"}";
+  if (this->getNextChain())
+	ret += this->getNextChain()->getChainDescription();
+  return ret;
+}
+
 
 
 
 string ChainsawCharset::getBlockValue()
 {
-	string ret = "";
-	int i;
+  string ret = "";
+	int i=0;
 	if (this->getCurrentLength())
 		{
-			for (i = 1;
-					 i <= this->getCurrentLength();
-					 i++)
+			for (i = 0;
+				 i < this->getCurrentLength();
+				 i++)
 				{
-					ret += symbolList[indexes[i]];
+				  ret += symbolList[indexes[i]];
 				}
 		}
 	return ret;
@@ -170,22 +180,29 @@ string ChainsawCharset::getBlockValue()
 void ChainsawCharset::doAdvance()
 {
 	int i;
-	if (this->getCurrentLength()>0)
-		{
-			indexes[this->getCurrentLength()]++;
-			for (i = (this->getCurrentLength());
-				 i > 0;
+	if (!this->firstRun)
+	  {
+		if (this->getCurrentLength()>0)
+		  {
+			indexes[this->getCurrentLength()-1]++;
+			for (i = (this->getCurrentLength()-1);
+				 i >= 0;
 				 i--)
-				{
-					if (this->indexes[i] == this->symbolList.length())
-						{
-							indexes[i] = 0;
-							if (i > 1) indexes[i-1]++;
-							else this->increaseCurrentLength();
-						}
-				}
-		}
-	else this->increaseCurrentLength();
+			  {
+				if (this->indexes[i] == this->symbolList.length())
+				  {
+					indexes[i] = 0;
+					if (i > 0) indexes[i-1]++;
+					else this->increaseCurrentLength();
+				  }
+			  }
+		  }
+		else
+		  {
+			this->increaseCurrentLength();
+		  }
+	  }
+	else this->firstRun = false;
 }
 
 void ChainsawCharset::increaseCurrentLength()
@@ -201,6 +218,7 @@ void ChainsawCharset::rewindBlock()
 {
 	this->indexes.clear();
 	this->resetCurrentLength();
+	this->firstRun = true;
 }
 
 void ChainsawCharset::setAttribute(string attrName,string value)
@@ -243,6 +261,16 @@ void ChainsawCharset::setAttribute(string attrName,string value)
 		}
 }
 
+string ChainsawCharset::getChainDescription()
+{
+  string ret = "CHARSET";
+  ret += "{min="+to_string(getMinLength())+"}";
+  ret += "{max="+to_string(getMaxLength())+"}";
+  if (this->getNextChain())
+	ret += this->getNextChain()->getChainDescription();
+  return ret;
+}
+
 
 
 
@@ -273,7 +301,8 @@ void ChainsawDictionary::increaseCurrentLength()
 
 void ChainsawDictionary::rewindBlock()
 {
-	this->input.seekg (0, this->input.beg);
+  this->input.clear();
+  this->input.seekg (0, this->input.beg);
 }
 
 void ChainsawDictionary::setAttribute(string attrName, string value)
@@ -293,6 +322,8 @@ void ChainsawDictionary::setAttribute(string attrName, string value)
 			if (this->input.bad() || this->input.fail())
 					throw ChainsawExcept(ChainsawExcept::IOFailure);
 
+			this->src = value;
+
 		}
 	else
 		{
@@ -301,3 +332,13 @@ void ChainsawDictionary::setAttribute(string attrName, string value)
 													 temp.c_str());
 		}
 }
+
+string ChainsawDictionary::getChainDescription()
+{
+  string ret = "DICTIONARY";
+  ret += "{src="+this->src+"}";
+  if (this->getNextChain())
+	ret += this->getNextChain()->getChainDescription();
+  return ret;
+}
+

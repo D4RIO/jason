@@ -10,7 +10,7 @@ TESTBIN:=\
 
 CPP:=g++
 
-CFLAGS:=\
+CFLAGS=\
 	-Wall
 
 BOLD:=\033[1m
@@ -31,10 +31,10 @@ else
 endif
 
 ifdef DEBUG
-	CFLAGS=$(CFLAGS) -g
+	CFLAGS+=-g
 endif
 
-all::$(TESTBIN)
+all::$(TESTBIN) jason
 
 .PRECIOUS: %.o
 
@@ -43,16 +43,20 @@ all::$(TESTBIN)
 # CREAR EL OBJETO SI EXISTE EL CPP
 %.o: %.cpp %.hpp
 	@echo "$(NORM)$(YLLW) □ $(NORM) $(NORM)CMP $@ $(NORM) $(FROM)"
-	$(HUSH)$(CPP) -c $^
+	$(HUSH)$(CPP) $(CFLAGS) -c $^
 
 %.o: %.cpp
 	@echo "$(NORM)$(YLLW) □ $(NORM) $(NORM)CMP $@ $(NORM) $(FROM)"
-	$(HUSH)$(CPP) -c $^
+	$(HUSH)$(CPP) $(CFLAGS) -c $^
 
 # CREAR EL TEST SI ESTÁN TODOS LOS OBJETOS
 %.test: %.o passgen.o tinyxml2.o chainsaws.o
 	@echo "$(BOLD)$(GREN) ■ $(NORM) $(BOLD)GEN $@ $(NORM) $(FROM)"
-	$(HUSH)$(CPP) -o $@ $^
+	$(HUSH)$(CPP) $(CFLAGS) -o $@ $^
+
+jason: tinyxml2.o chainsaws.o jason.o
+	@echo "$(BOLD)$(GREN) ⛓ $(NORM) $(BOLD)GEN $@ $(NORM) $(FROM)"
+	$(HUSH)$(CPP) $(CFLAGS) -o $@ $^
 
 clean:
 	@echo "$(BOLD)$(REDD) ■ $(NORM) $(BOLD)DEL $(NEEDCLEAN)"

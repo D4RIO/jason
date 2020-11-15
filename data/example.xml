@@ -1,0 +1,24 @@
+<PASS>
+
+<!-- 
+	 This file creates 1 642 359 unique phrases in about 3.3 seconds
+	 (Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz) to /dev/null
+	 I/O operations on the disk may slow it (even 5x, every disk is different).
+
+	 The output file is 27M long for the 4 words in the dictionary.
+	 Note that the dictionary must not have any blank linkes (not even at the end).
+
+	 The power of this, however, is the simplicity of this XML password description.
+-->
+
+	<CHARSET charset="-+*" minLength="0" maxLength="1" />
+
+	<DICTIONARY src="data/007-dictionary" />
+
+	<DICTIONARY src="data/007-dictionary" />
+
+	<NUMBER minLength="0" maxLength="2" />
+
+	<CHARSET charset="#!/%$+-*.:,;?" minLength="0" maxLength="2" />
+
+</PASS>
