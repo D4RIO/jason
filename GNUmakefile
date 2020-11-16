@@ -1,7 +1,4 @@
 TESTBIN:=\
-	001-loadfile.test \
-	002-loadconfig.test \
-	003-loadconfig-errors.test \
 	004-passml.test \
 	005-number-appender.test \
 	006-charset-appender.test \
@@ -20,7 +17,7 @@ GREN:=\033[32m
 BLUE:=\033[34m
 YLLW:=\033[33m
 
-NEEDCLEAN:=*.test *.o *.gch
+NEEDCLEAN:=*.test *.o *.gch jason
 
 ifdef VERBOSE
 	HUSH:=
@@ -50,7 +47,7 @@ all::$(TESTBIN) jason
 	$(HUSH)$(CPP) $(CFLAGS) -c $^
 
 # CREAR EL TEST SI ESTÁN TODOS LOS OBJETOS
-%.test: %.o passgen.o tinyxml2.o chainsaws.o
+%.test: %.o tinyxml2.o chainsaws.o
 	@echo "$(BOLD)$(GREN) ■ $(NORM) $(BOLD)GEN $@ $(NORM) $(FROM)"
 	$(HUSH)$(CPP) $(CFLAGS) -o $@ $^
 

@@ -1,4 +1,6 @@
-lists/dev
+data/dev
 *.test
 *.o
 *.gch
+*~
+jason
