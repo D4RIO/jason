@@ -73,6 +73,7 @@ public:
 	virtual void rewindBlock() = 0;
 	virtual void setAttribute(std::string, std::string) = 0;
 	virtual std::string getChainDescription () = 0;
+	virtual unsigned long long size() = 0;
 };
 
 
@@ -94,6 +95,7 @@ public:
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
 	std::string getChainDescription();
+	unsigned long long size();
 };
 
 
@@ -119,14 +121,16 @@ public:
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
 	std::string getChainDescription();
+	unsigned long long size();
 };
 
 
 
 class ChainsawDictionary : public Chainsaw {
 	std::ifstream input;
-	std::string src;
-	std::string line;
+	std::string   src;
+	std::string   line;
+	size_t        number_of_lines;
 protected:
 	std::string getBlockValue();
 	void doAdvance();
@@ -140,6 +144,7 @@ public:
 	void rewindBlock();
 	void setAttribute(std::string,std::string);
 	std::string getChainDescription();
+	unsigned long long size();
 };
 
 

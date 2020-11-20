@@ -69,10 +69,13 @@ int main (int argCount, char **argVec) {
 
   try
 	{
-	  while (1)
+		cerr << "Total number will be: "
+		     <<	jason->size() << endl;
+
+		while (1)
 		{
-		  value = jason->nextChainValue();
-		  cout << value << endl;
+			value = jason->nextChainValue();
+			cout << value << endl;
 		}
 	}
   catch (ChainsawExcept e)

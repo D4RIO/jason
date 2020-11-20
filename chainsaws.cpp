@@ -158,6 +158,26 @@ string ChainsawNumber::getChainDescription()
   return ret;
 }
 
+unsigned long long ChainsawNumber::size()
+{
+	unsigned long long retval = 0L;
+	int i;
+
+	for (i = this->getMinLength();
+	     i <= this->getMaxLength();
+	     i++)
+	{
+		retval += pow (10, i);
+	}
+
+	if (this->getNextChain())
+	{
+		retval *= this->getNextChain()->size();
+	}
+
+	return retval;
+}
+
 
 
 
@@ -271,6 +291,27 @@ string ChainsawCharset::getChainDescription()
   return ret;
 }
 
+unsigned long long ChainsawCharset::size()
+{
+	unsigned long long retval = 0L;
+	int i;
+
+	for (i = this->getMinLength();
+	     i <= this->getMaxLength();
+	     i++)
+	{
+		size_t n = this->symbolList.length();
+		retval += pow(n, i);
+	}
+
+	if (this->getNextChain())
+	{
+		retval *= this->getNextChain()->size();
+	}
+
+	return retval;
+}
+
 
 
 
@@ -305,32 +346,40 @@ void ChainsawDictionary::rewindBlock()
   this->input.seekg (0, this->input.beg);
 }
 
+#include <algorithm> // std::count
 void ChainsawDictionary::setAttribute(string attrName, string value)
 {
 
 	if (attrName == "src")
+	{
+		try
 		{
-			try
-				{
-					this->input.open(value, ifstream::in);
-				}
-			catch (...)
-				{
-					throw ChainsawExcept(ChainsawExcept::IOFailure);
-				}
+			this->input.open(value, ifstream::in);
 
-			if (this->input.bad() || this->input.fail())
-					throw ChainsawExcept(ChainsawExcept::IOFailure);
+			// count lines in the buffer and store
+			this->number_of_lines = count(istreambuf_iterator<char>(this->input),
+			                              istreambuf_iterator<char>(), '\n');
+			this->number_of_lines++;
 
-			this->src = value;
-
+			this->rewindBlock();
 		}
+		catch (...)
+		{
+			throw ChainsawExcept(ChainsawExcept::IOFailure);
+		}
+
+		if (this->input.bad() || this->input.fail())
+			throw ChainsawExcept(ChainsawExcept::IOFailure);
+
+		this->src = value;
+
+	}
 	else
-		{
-			string temp = "Attribute \"" + attrName + "\" is not recognized by DICTIONARY";
-			throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
-													 temp.c_str());
-		}
+	{
+		string temp = "Attribute \"" + attrName + "\" is not recognized by DICTIONARY";
+		throw ChainsawExcept(ChainsawExcept::UnknownAttribute,
+				     temp.c_str());
+	}
 }
 
 string ChainsawDictionary::getChainDescription()
@@ -340,5 +389,17 @@ string ChainsawDictionary::getChainDescription()
   if (this->getNextChain())
 	ret += this->getNextChain()->getChainDescription();
   return ret;
+}
+
+unsigned long long ChainsawDictionary::size()
+{
+	unsigned long long retval = this->number_of_lines;
+
+	if (this->getNextChain())
+	{
+		retval *= this->getNextChain()->size();
+	}
+
+	return retval;
 }
 
