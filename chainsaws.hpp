@@ -42,12 +42,13 @@ public:
 
 
 class Chainsaw {
-	Chainsaw *_nextChainsaw;
-	int _minLength;
-	int _maxLength;
-	int _currentLength;
-
+	Chainsaw* _nextChainsaw;
+	int       _minLength;
+	int       _maxLength;
+	int       _currentLength;
+	
 protected:
+	bool    firstRun;
 	virtual std::string getBlockValue() = 0;
 	virtual void doAdvance() = 0; // can throw ChainsawExcept (::NoMore)
 	virtual void increaseCurrentLength() {_currentLength++;}
@@ -58,6 +59,7 @@ public:
 	Chainsaw() {
 		_nextChainsaw = NULL;
 		_currentLength = 0;
+		firstRun = true;
 	}
 	~Chainsaw() {}
 	Chainsaw *getNextChainsaw() {
@@ -70,7 +72,14 @@ public:
 	void setMaxLength(int yourMax) {_maxLength = yourMax;}
 	void addChain (Chainsaw *);
 	std::string nextChainValue();
-	virtual void rewindBlock() = 0;
+	virtual void rewindBlock() {
+		firstRun = true;
+		if (this->getNextChain())
+		{
+			// blocks before don't know about the deep chain
+			this->getNextChain()->rewindBlock();
+		}
+	}
 	virtual void setAttribute(std::string, std::string) = 0;
 	virtual std::string getChainDescription () = 0;
 	virtual unsigned long long size() = 0;
@@ -104,7 +113,6 @@ public:
 class ChainsawCharset : public Chainsaw {
 	std::vector<size_t> indexes;
 	std::string         symbolList;
-	bool                firstRun;
 protected:
 	std::string getBlockValue();
 	void doAdvance();
@@ -116,7 +124,6 @@ public:
 		this->setMaxLength(2);
 		this->indexes.clear();
 		this->symbolList="";
-		this->firstRun = true;
 	}
 	void rewindBlock();
 	void setAttribute(std::string,std::string);

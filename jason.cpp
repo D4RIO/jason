@@ -66,27 +66,30 @@ int main (int argCount, char **argVec) {
 	}
 
   string value = "";
+  unsigned long long real_number = 0L;
 
   try
 	{
-		cerr << "Total number will be: "
+		cerr << "Calculated lines will be: "
 		     <<	jason->size() << endl;
 
 		while (1)
 		{
 			value = jason->nextChainValue();
 			cout << value << endl;
+			real_number++;
 		}
 	}
   catch (ChainsawExcept e)
 	{
 	  if (e.type != ChainsawExcept::NoMore)
 		{
-		  cerr << e.describe() << endl;
-		  return 1;
+			cerr << e.describe() << endl;
+			return 1;
 		}
 	}
 
+  cerr << "Total lines were: " << real_number << endl;
   return 0;
 }
 
