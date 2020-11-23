@@ -30,7 +30,7 @@ int main (int argCount, char **argVec)
 	XMLElement *root = document.RootElement ();
 	const char *name = root->Name ();
 
-	if (string(name) != "PASS")
+	if (string (name) != "PASS")
 	{
 		cerr << "The XML that I understand starts with a <PASS> tag."
 		     << endl;
@@ -83,18 +83,21 @@ int main (int argCount, char **argVec)
 
 
 	string value = "";
-	unsigned long long real_number = 0L;
+	unsigned long long theory = 0L;
+	unsigned long long actual = 0L;
 
 	try
 	{
-		cerr << "Calculated lines will be: "
-		     <<	jason->size() << endl;
+		theory = jason->size ();
 
 		while (1)
 		{
 			value = jason->nextChainValue ();
 			cout << value << endl;
-			real_number++;
+
+			actual++;
+			fprintf (stderr, "\r\033[2K[%lld/%lld] %s", actual, theory, value.c_str ());
+			fflush(stderr);
 		}
 	}
 	catch (ChainsawExcept e)
@@ -109,6 +112,6 @@ int main (int argCount, char **argVec)
 
 
 
-	cerr << "Total lines were: " << real_number << endl;
+	cerr << "\r\033[2K" << "Total lines were: " << actual << endl;
 	return 0;
 }
